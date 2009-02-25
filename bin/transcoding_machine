@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'optparse'
+
+OPTIONS = {
+  :config_file => nil
+}
+
+ARGV.options do |o|
+  script_name = File.basename($0)
+  
+  o.set_summary_indent('  ')
+  o.banner =    "Usage: #{script_name} [OPTIONS]"
+  o.define_head "Transcodes a video or audio file into multible different formats"
+  o.separator   ""
+  
+  o.on("-c [CONFIG FILE]", "The configuration file to use") do |config_file|
+    OPTIONS[:config_file] = config_file
+  end
+  
+  o.separator ""
+
+  o.on_tail("-h", "--help", "Show this help message.") { puts o; exit }
+  
+  o.parse!
+  
+  OPTIONS[:source_file] = ARGV[0]
+
+  unless OPTIONS[:config_file] && OPTIONS[:source_file]
+    puts o; exit
+  end
+  
+end
+
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'transcoding_machine'
+
+TranscodingMachine::Transcoder.options[:work_directory] = '/tmp/transcoding_machine'
+
+media_players = TranscodingMachine.load_models_from_json(File.read(OPTIONS[:config_file])).values
+
+transcoder = TranscodingMachine::Transcoder.new(OPTIONS[:source_file], media_players)
+transcoder.start

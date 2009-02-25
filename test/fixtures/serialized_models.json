@@ -1,0 +1,52 @@
+{
+  "media_formats": {
+    "1": {
+      "name": "h264 Video 640x352",
+      "type": "video",
+      "priority": 3000,
+      "width": 640,
+      "height": 352,
+      "aspect_ratio": "16/9",
+      "mime_type": "video/mp4",
+      "suffix": "_h264_640_480.mp4",
+      "command": "cp {{in_file_name}} {{out_file_name}}",
+      "criteria": [
+        {"key": "video_codec", "operator": "equals", "value": "h264"},
+        {"key": "width", "operator": "equals", "value": 640},
+        {"key": "height", "operator": "equals", "value": 352},
+        {"key": "ipod_uuid", "operator": "equals", "value": true},
+        {"key": "audio_codec", "operator": "equals", "value": "aac"}
+      ]
+    },
+    "2": {
+      "name": "h264 HD 1280x720p",
+      "type": "video",
+      "priority": 10000,
+      "width": 1280,
+      "height": 720,
+      "aspect_ratio": "16/9",
+      "mime_type": "video/mp4",
+      "suffix": "_h264_HD1280_720p.mp4",
+      "command": "cp {{in_file_name}} {{out_file_name}}",
+      "criteria": [
+        {"key": "video_codec", "operator": "equals", "value": "h264"},
+        {"key": "width", "operator": "equals", "value": 1280},
+        {"key": "height", "operator": "equals", "value": 720},
+        {"key": "audio_codec", "operator": "equals", "value": "aac"}
+      ]
+    }
+  },
+  
+  "media_players": {
+    "appletv": {
+      "name": "AppleTV",
+      "description": "Damn cool media player",
+      "formats": ["1", "2"]
+    },
+    "ipod": {
+      "name": "iPod",
+      "description": "you know this thing!",
+      "formats": ["1"]
+    }
+  }
+}
