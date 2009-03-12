@@ -16,10 +16,11 @@ module TranscodingMachine
       self.class.options[:storage]
     end
 
-    def initialize(source_file_name, media_players, event_handler = nil, storage_options = {})
+    def initialize(source_file_name, media_players, media_formats, event_handler = nil, storage_options = {})
       @source_file_name = source_file_name
       @event_handler = event_handler
       @media_players = media_players
+      @media_formats = media_formats
       @storage_options = storage_options
     end
 
@@ -42,12 +43,15 @@ module TranscodingMachine
     def start
       prepare_working_directory
       get_source_file
-      source_file_attributes = analyze_source_file
+      source_file_attributes, source_media_format = analyze_source_file
 
       thumbnail_file_path = generate_thumbnail(source_file_attributes)
       storage.put_thumbnail_file(thumbnail_file_path, @source_file_name, @storage_options) if thumbnail_file_path
 
       media_formats = @media_players.map {|mp| mp.best_format_for(source_file_attributes)}.compact.uniq
+      
+      media_formats -= [source_media_format]
+      
       media_formats.each do |media_format|
         destination_file_path = transcode(source_file_attributes, media_format)
         put_destination_file(destination_file_path, media_format)
@@ -72,9 +76,11 @@ module TranscodingMachine
       @event_handler.analyzing_source_file if @event_handler
 
       source_file_attributes = MediaFileAttributes.new(source_file_path)
+      
+      source_media_format = @media_formats.find {|mf| mf.matches(source_file_attributes)}
 
-      @event_handler.analyzed_source_file if @event_handler
-      source_file_attributes
+      @event_handler.analyzed_source_file(source_file_attributes, source_media_format) if @event_handler
+      [source_file_attributes, source_media_format]
     end
     
     def generate_thumbnail(source_file_attributes)

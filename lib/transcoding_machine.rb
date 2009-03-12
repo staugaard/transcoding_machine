@@ -38,6 +38,6 @@ module TranscodingMachine
       media_players[id] = MediaPlayer.new(attributes)
     end
     
-    media_players
+    [media_players, media_formats.values.sort {|f1, f2| f2.priority <=> f1.priority}]
   end
 end

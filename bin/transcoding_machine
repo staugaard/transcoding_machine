@@ -37,7 +37,7 @@ require 'transcoding_machine'
 
 TranscodingMachine::Transcoder.options[:work_directory] = '/tmp/transcoding_machine'
 
-media_players = TranscodingMachine.load_models_from_json(File.read(OPTIONS[:config_file])).values
+media_players = TranscodingMachine.load_models_from_json(File.read(OPTIONS[:config_file])).first.values
 
 transcoder = TranscodingMachine::Transcoder.new(OPTIONS[:source_file], media_players)
 transcoder.start

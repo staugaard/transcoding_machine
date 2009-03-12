@@ -1,7 +1,9 @@
+require 'right_aws'
+
 module TranscodingMachine
   class S3Storage
-    def initialize(aws_settings = {})
-      @s3 = RightAws::S3.new(nil, nil, aws_settings)
+    def initialize
+      @s3 = RightAws::S3.new(nil, nil, :server => 's3.amazonaws.com', :port => 80, :protocol => 'http')
     end
 
     def get_file(key_name, destination_file_path, options)
@@ -22,10 +24,10 @@ module TranscodingMachine
       FileUtils.rm(source_file_path)
     end
 
-    def put_thumbnail_file(thumbnail_file_path, source_file_key_name, options)
+    def put_thumbnail_file(thumbnail_file, source_file_key_name, options)
       destination_key = RightAws::S3::Key.create(@s3.bucket(options[:bucket]), "#{source_file_key_name}.thumb.jpg")
-      destination_key.put(File.new(thumbnail_file_path), 'public-read', 'Content-Type' => 'image/jpg')
-      FileUtils.rm(thumbnail_file_path)
+      destination_key.put(thumbnail_file, 'public-read', 'Content-Type' => 'image/jpg')
+      FileUtils.rm(thumbnail_file.path)
     end
   end
 end
