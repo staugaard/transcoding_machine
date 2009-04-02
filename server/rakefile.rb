@@ -67,7 +67,7 @@ end
 @build_root = "/mnt/build"
 @fs_dir = "#{@build_root}/ubuntu"
 
-task :default => :install_gems
+task :default => :configure
 
 desc "Removes all build files"
 task :clean_all do |t|
@@ -101,6 +101,16 @@ task :install_gems => [:install_packages] do |t|
   end
 end
 
+desc "Copy files into the image"
+task :copy_files do |t|
+  unless_completed(t) do
+    sh("cp -r files/* #{@fs_dir}")
+  end
+end
+
+desc "Configure the image"
+task :configure => [:install_gems, :copy_files] do |t|
+end
 ##################
 
 # Execute a given block and touch a stampfile. The block won't be run if the stampfile exists.
