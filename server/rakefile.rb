@@ -61,7 +61,7 @@ end
 )
 
 @rubygems = [
-  "right_aws"
+  "staugaard-transcoding_machine"
 ]
 
 @build_root = "/mnt/build"
