@@ -26,7 +26,6 @@ module TranscodingMachine
       while message = queue.pop
         consume_message(message, &block)
         number_of_consumed_messages += 1
-        sleep(5)
       end
       sleep(5) if number_of_consumed_messages == 0
       number_of_consumed_messages
@@ -41,7 +40,6 @@ module TranscodingMachine
       rescue Exception => e
         
       end
-      
       
       @last_active_at = Time.now
     end

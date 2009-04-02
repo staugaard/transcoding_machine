@@ -1,5 +1,5 @@
 require 'transcoding_machine/media_player'
-require 'transcoding_machine/media_file_attributes'
+require 'transcoding_machine/server/media_file_attributes'
 
 module TranscodingMachine
   class MediaFormat
@@ -24,7 +24,7 @@ module TranscodingMachine
     end
     
     def self.type_cast_attribute_value(key, value)
-      case MediaFileAttributes::FIELD_TYPES[key]
+      case Server::MediaFileAttributes::FIELD_TYPES[key]
       when :boolean
         (value.to_s.downcase == 'true' || value.to_s == '1')
       when :string
@@ -51,13 +51,13 @@ module TranscodingMachine
       super
       @bitrate = args[:bitrate]
       
-      @fixed_criteria << TranscodingMachine::MediaFormatCriterium.new(:key => :video,
-                                                                      :operator => :not_equals,
-                                                                      :value => true)
+      @fixed_criteria << MediaFormatCriterium.new(:key => :video,
+                                                  :operator => :not_equals,
+                                                  :value => true)
       
-      @fixed_criteria << TranscodingMachine::MediaFormatCriterium.new(:key => :audio,
-                                                                      :operator => :equals,
-                                                                      :value => true)
+      @fixed_criteria << MediaFormatCriterium.new(:key => :audio,
+                                                  :operator => :equals,
+                                                  :value => true)
     end
     
     def can_transcode?(media_file_attributes)
@@ -74,14 +74,14 @@ module TranscodingMachine
       
       case args[:aspect_ratio]
       when String
-        MediaFileAttributes::ASPECT_RATIO_VALUES[args[:aspect_ratio]]
+        Server::MediaFileAttributes::ASPECT_RATIO_VALUES[args[:aspect_ratio]]
       when Float
         @aspect_ratio = args[:aspect_ratio]
       end
       
-      @fixed_criteria << TranscodingMachine::MediaFormatCriterium.new(:key => :video,
-                                                                      :operator => :equals,
-                                                                      :value => true)
+      @fixed_criteria << MediaFormatCriterium.new(:key => :video,
+                                                  :operator => :equals,
+                                                  :value => true)
     end
 
     def can_transcode?(media_file_attributes)

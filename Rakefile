@@ -9,6 +9,8 @@ begin
     s.homepage = "http://github.com/staugaard/transcoding_machine"
     s.description = "TODO"
     s.authors = ["Mick Staugaard"]
+    s.add_dependency(%q<activesupport>, [">= 2.2.2"])
+    s.add_dependency(%q<unicode>, [">= 0.1"])
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

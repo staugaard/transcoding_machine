@@ -3,8 +3,9 @@ require 'activesupport'
 require 'transcoding_machine/media_format'
 require 'transcoding_machine/media_format_criterium'
 require 'transcoding_machine/media_player'
-require 'transcoding_machine/media_file_attributes'
-require 'transcoding_machine/transcoder'
+require 'transcoding_machine/client/job_queue'
+require 'transcoding_machine/client/result_queue'
+require 'transcoding_machine/client/server_manager'
 
 module TranscodingMachine
   module_function
@@ -13,8 +14,9 @@ module TranscodingMachine
   end
   
   def load_models_from_hash(models_hash)
+    models_hash.symbolize_keys!
     media_formats = Hash.new
-    models_hash['media_formats'].each do |id, attributes|
+    models_hash[:media_formats].each do |id, attributes|
       attributes[:id] = id
       attributes.symbolize_keys!
       if attributes[:criteria]
@@ -31,7 +33,7 @@ module TranscodingMachine
     end
     
     media_players = Hash.new
-    models_hash['media_players'].each do |id, attributes|
+    models_hash[:media_players].each do |id, attributes|
       attributes[:id] = id
       attributes.symbolize_keys!
       attributes[:formats].map! {|format_id| media_formats[format_id] }

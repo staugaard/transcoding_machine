@@ -1,5 +1,5 @@
 require 'transcoding_machine/media_format'
-require 'transcoding_machine/media_file_attributes'
+require 'transcoding_machine/server/media_file_attributes'
 
 module TranscodingMachine
   class MediaFormatCriterium
@@ -25,7 +25,7 @@ module TranscodingMachine
     end
     
     def value_type
-      MediaFileAttributes::FIELD_TYPES[@key]
+      Server::MediaFileAttributes::FIELD_TYPES[@key]
     end
     
     def matches(media_file_attributes)
