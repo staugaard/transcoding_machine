@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+require File.expand_path('../lib/transcoding_machine/server/worker', File.dirname(__FILE__))
+
+if ARGV.size >= 1
+  log = File.new(ARGV[0], "a")
+end
+log = log || STDERR
+
+begin
+  TranscodingMachine::Server::Ec2Environment.logger = log
+  TranscodingMachine::Server::Ec2Environment.load
+  
+  transcoding_machine = TranscodingMachine::Server::Worker.new(log)
+
+  # Catch interrupts
+  Signal.trap("INT") do
+    transcoding_machine.shutdown
+  end
+
+  # Run the transcoder.
+  transcoding_machine.run
+rescue
+  log.puts "error #{$!}"
+  pp "#{$@}"
+  exit 1
+end

@@ -3,11 +3,6 @@ require 'right_aws'
 require 'transcoding_machine/server/ec2_environment'
 require 'transcoding_machine/server/transcoding_event_listener'
 
-if ARGV.size >= 1
-  log = File.new(ARGV[0], "a")
-end
-log = log || STDERR
-
 module TranscodingMachine
   module Server
     class Worker
@@ -139,23 +134,4 @@ module TranscodingMachine
 
     end
   end
-end
-
-begin
-  TranscodingMachine::Server::Ec2Environment.logger = log
-  TranscodingMachine::Server::Ec2Environment.load
-  
-  transcoding_machine = TranscodingMachine::Server::Worker.new(log)
-
-  # Catch interrupts
-  Signal.trap("INT") do
-    transcoding_machine.shutdown
-  end
-
-  # Run the prime generator.
-  transcoding_machine.run
-rescue
-  log.puts "error #{$!}"
-  pp "#{$@}"
-  exit 1
 end
