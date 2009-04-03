@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{transcoding_machine}
-  s.version = "0.0.2"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mick Staugaard"]
-  s.date = %q{2009-04-02}
+  s.date = %q{2009-04-03}
   s.description = %q{TODO}
   s.email = %q{mick@staugaard.com}
   s.executables = ["transcoding_machine", "transcoding_machine_ec2_server"]
