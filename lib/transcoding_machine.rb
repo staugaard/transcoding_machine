@@ -8,6 +8,9 @@ require 'transcoding_machine/client/result_queue'
 require 'transcoding_machine/client/server_manager'
 
 module TranscodingMachine
+  version = YAML.load_file(File.expand_path('../VERSION.yml', File.dirname(__FILE__)))
+  VERSION = "#{version[:major]}.#{version[:minor]}.#{version[:patch]}"
+  
   module_function
   def load_models_from_json(json_string)
     load_models_from_hash(ActiveSupport::JSON.decode(json_string))

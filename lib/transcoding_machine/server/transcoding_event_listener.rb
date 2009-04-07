@@ -51,6 +51,7 @@ module TranscodingMachine
       def push_status(status, options = {})
         msg = @message_properties.clone
         msg[:status] = status
+        msg[:transcoding_machine_version] => TranscodingMachine::VERSION
         msg.merge!(options)
         @result_queue.push(msg.to_yaml)
       end
