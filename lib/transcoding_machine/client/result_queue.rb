@@ -33,7 +33,6 @@ module TranscodingMachine
     
     def consume_message(message, &block)
       message_properties = YAML.load(message.body)
-      puts "consuming message #{message_properties.inspect}"
       
       begin
         yield(message_properties)

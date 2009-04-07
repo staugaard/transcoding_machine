@@ -21,7 +21,7 @@ module TranscodingMachine
       end
 
       def analyzed_source_file(source_file_attributes, source_media_format)
-        push_status(:analyzed, :media_format => source_media_format, :media_attributes => source_file_attributes)
+        push_status(:analyzed, :media_format => source_media_format.id, :media_attributes => source_file_attributes)
       end
 
       def generating_thumbnail_file
@@ -29,23 +29,23 @@ module TranscodingMachine
       end
 
       def generated_thumbnail_file
-
+        push_status(:created_thumbnail)
       end
 
       def transcoding(media_format)
-        push_status(:transcoding, :media_format => media_format)
+        push_status(:transcoding, :media_format => media_format.id)
       end
 
       def transcoded(media_format)
-        push_status(:transcoded, :media_format => media_format)
+        push_status(:transcoded, :media_format => media_format.id)
       end
 
       def putting_destination_file(file_path, media_format)
-        push_status(:uploading, :media_format => media_format, :destination_key => file_path)
+        push_status(:uploading, :media_format => media_format.id, :destination_key => file_path)
       end
 
       def put_destination_file(file_path, media_format)
-        push_status(:uploaded, :media_format => media_format, :destination_key => file_path)
+        push_status(:uploaded, :media_format => media_format.id, :destination_key => file_path)
       end
 
       def push_status(status, options = {})
