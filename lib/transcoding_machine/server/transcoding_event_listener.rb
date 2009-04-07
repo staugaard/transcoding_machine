@@ -23,7 +23,7 @@ module TranscodingMachine
       def analyzed_source_file(source_file_attributes, source_media_format, target_media_formats)
         push_status(:analyzed, :media_format => source_media_format.id,
                                :media_attributes => source_file_attributes,
-                               :target_formats => target_media_formats.map &:id)
+                               :target_formats => target_media_formats.map(&:id))
       end
 
       def generating_thumbnail_file
@@ -53,7 +53,7 @@ module TranscodingMachine
       def push_status(status, options = {})
         msg = @message_properties.clone
         msg[:status] = status
-        msg[:transcoding_machine_version] => TranscodingMachine::VERSION
+        msg[:transcoding_machine_version] = TranscodingMachine::VERSION
         msg.merge!(options)
         @result_queue.push(msg.to_yaml)
       end
