@@ -5,7 +5,6 @@ require 'transcoding_machine/media_format_criterium'
 require 'transcoding_machine/media_player'
 require 'transcoding_machine/client/job_queue'
 require 'transcoding_machine/client/result_queue'
-require 'transcoding_machine/client/server_manager'
 
 module TranscodingMachine
   version = YAML.load_file(File.expand_path('../VERSION.yml', File.dirname(__FILE__)))

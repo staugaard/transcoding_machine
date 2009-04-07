@@ -44,16 +44,12 @@ module TranscodingMachine
       def start
         prepare_working_directory
         get_source_file
-        source_file_attributes, source_media_format = analyze_source_file
+        source_file_attributes, source_media_format, target_media_formats = analyze_source_file
 
         thumbnail_file_path = generate_thumbnail(source_file_attributes)
         storage.put_thumbnail_file(thumbnail_file_path, @source_file_name, @storage_options) if thumbnail_file_path
 
-        media_formats = @media_players.map {|mp| mp.best_format_for(source_file_attributes)}.compact.uniq
-
-        media_formats -= [source_media_format]
-
-        media_formats.each do |media_format|
+        target_media_formats.each do |media_format|
           destination_file_path = transcode(source_file_attributes, media_format)
           put_destination_file(destination_file_path, media_format)
         end
@@ -80,8 +76,11 @@ module TranscodingMachine
 
         source_media_format = @media_formats.find {|mf| mf.matches(source_file_attributes)}
 
-        @event_handler.analyzed_source_file(source_file_attributes, source_media_format) if @event_handler
-        [source_file_attributes, source_media_format]
+        target_media_formats = @media_players.map {|mp| mp.best_format_for(source_file_attributes)}.compact.uniq
+        target_media_formats -= [source_media_format]
+
+        @event_handler.analyzed_source_file(source_file_attributes, source_media_format, target_media_formats) if @event_handler
+        [source_file_attributes, source_media_format, target_media_formats]
       end
 
       def generate_thumbnail(source_file_attributes)
