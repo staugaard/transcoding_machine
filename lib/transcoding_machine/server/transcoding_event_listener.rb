@@ -21,7 +21,7 @@ module TranscodingMachine
       end
 
       def analyzed_source_file(source_file_attributes, source_media_format, target_media_formats)
-        push_status(:analyzed, :media_format => source_media_format.id,
+        push_status(:analyzed, :media_format => source_media_format ? source_media_format.id : nil,
                                :media_attributes => source_file_attributes,
                                :target_formats => target_media_formats.map(&:id))
       end

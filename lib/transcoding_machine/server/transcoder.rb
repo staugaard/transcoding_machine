@@ -118,9 +118,10 @@ module TranscodingMachine
       end
 
       def put_destination_file(file_path, media_format)
-        @event_handler.putting_destination_file(file_path, media_format) if @event_handler
-        storage.put_file(destination_file_path(media_format), destination_file_name(media_format), media_format, @storage_options)
-        @event_handler.put_destination_file(file_path, media_format) if @event_handler
+        dst_name = destination_file_name(media_format)
+        @event_handler.putting_destination_file(dst_name, media_format) if @event_handler
+        storage.put_file(destination_file_path(media_format), dst_name, media_format, @storage_options)
+        @event_handler.put_destination_file(dst_name, media_format) if @event_handler
       end
 
       def clear

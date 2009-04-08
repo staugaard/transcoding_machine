@@ -29,6 +29,7 @@ module TranscodingMachine
         destination_key = RightAws::S3::Key.create(@s3.bucket(options[:bucket]), "#{source_file_key_name}.thumb.jpg")
         destination_key.put(thumbnail_file, 'public-read', 'Content-Type' => 'image/jpg')
         FileUtils.rm(thumbnail_file.path)
+        destination_key.name
       end
     end
   end

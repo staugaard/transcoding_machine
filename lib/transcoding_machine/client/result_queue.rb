@@ -2,9 +2,10 @@ require 'right_aws'
 
 module TranscodingMachine
   class ResultQueue
-    def initialize
+    def initialize(logger = nil)
       @sqs = RightAws::SqsGen2.new
       @consuming = false
+      @logger = logger
     end
 
     def start_consuming(queue_names, &block)
@@ -37,7 +38,7 @@ module TranscodingMachine
       begin
         yield(message_properties)
       rescue Exception => e
-        
+        @logger.error(e) if @logger
       end
       
       @last_active_at = Time.now

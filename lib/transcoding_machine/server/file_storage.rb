@@ -17,6 +17,7 @@ module TranscodingMachine
 
       def put_thumbnail_file(thumbnail_file_path, source_file, options)
         FileUtils.mv(thumbnail_file_path.path, @root)
+        thumbnail_file_path.path
       end
     end
   end
