@@ -74,37 +74,65 @@ module TranscodingMachine
 
         start_time = Time.now
 
-        send_log_message "Transcoding: BLA BLA BLA"
-
         message_properties = YAML.load(msg.body)
         puts "consuming message #{message_properties.inspect}"
-        selected_media_players = find_media_players(message_properties[:media_players])
-        if selected_media_players.any?
-          if bucket = @s3.bucket(message_properties[:bucket].to_s)
-            key = bucket.key(message_properties[:key].to_s)
-            if key.exists?
-              transcoder = Transcoder.new(key.name,
-                                          selected_media_players,
-                                          @media_formats,
-                                          TranscodingEventListener.new(message_properties),
-                                          :bucket => bucket.name)
-              transcoder.start
+        
+        if bucket = @s3.bucket(message_properties[:bucket].to_s)
+          key = bucket.key(message_properties[:key].to_s)
+          if key.exists?
+            
+            transcoder = Transcoder.new(key.name,
+                                        @media_formats,
+                                        TranscodingEventListener.new(message_properties),
+                                        :bucket => bucket.name)
+
+            case message_properties[:action]
+            when :transcode
+              handle_transcode(transcoder, message_properties)
             else
-              send_log_message "Input file not found (bucket: #{message_properties[:bucket]} key: #{message_properties[:key]})"
+              handle_analyze(transcoder, message_properties)
             end
+            
           else
-            send_log_message "Input bucket not found (bucket: #{message_properties[:bucket]})"
+            send_log_message "Input file not found (bucket: #{message_properties[:bucket]} key: #{message_properties[:key]})"
           end
         else
-          send_log_message "No media players found #{message_properties[:media_players].inspect}"
+          send_log_message "Input bucket not found (bucket: #{message_properties[:bucket]})"
         end
-
+        
         end_time = Time.now
 
         if true #test if transcode was successful
           msg.delete
-          send_log_message "Transcoded: BLA BLA BLA"
         end
+      end
+      
+      def handle_analyze(transcoder, message_properties)
+        send_log_message "Analyzing: #{message_properties[:bucket]}/#{message_properties[:key]}"
+        selected_media_players = find_media_players(message_properties[:media_players])
+        if selected_media_players.any?
+
+          source_file_attributes, source_media_format, target_media_formats = transcoder.analyze_source_file(media_players)
+          
+          message_properties.delete(:media_players)
+          message_properties[:action] = :transcode
+          message_properties[:file_attributes] = source_file_attributes
+          
+          target_media_formats.each do |media_format|
+            message_properties[:media_format] = media_format
+            @work_queue.push(message_properties.to_yaml)
+          end
+
+        else
+          send_log_message "No media players found #{message_properties[:media_players].inspect}"
+        end
+        send_log_message "Analyzed: #{message_properties[:bucket]}/#{message_properties[:key]}"
+      end
+      
+      def handle_transcode(transcoder, message_properties)
+        send_log_message "Transcoding: #{message_properties[:bucket]}/#{message_properties[:key]} to format #{message_properties[:media_format]}"
+        transcoder.transcode(message_properties[:file_attributes], message_properties[:media_format])
+        send_log_message "Transcoded: #{message_properties[:bucket]}/#{message_properties[:key]} to format #{message_properties[:media_format]}"
       end
 
       def find_media_players(media_player_ids)

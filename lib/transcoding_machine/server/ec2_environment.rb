@@ -74,6 +74,10 @@ module TranscodingMachine
       def self.status_queue_name
         data[:user_data][:status_queue_name]
       end
+      
+      def self.updated_gem
+        data[:user_data][:updated_gem]
+      end
     end
   end
 end

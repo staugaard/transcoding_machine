@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require File.expand_path('../lib/transcoding_machine/server/worker', File.dirname(__FILE__))
+
+if ARGV.size >= 1
+  log = File.new(ARGV[0], "a")
+end
+log = log || STDERR
+
+begin
+  TranscodingMachine::Server::Ec2Environment.logger = log
+  TranscodingMachine::Server::Ec2Environment.load
+  
+  if TranscodingMachine::Server::Ec2Environment.updated_gem
+    `wget -O /tmp/transcoding_machine.gem #{TranscodingMachine::Server::Ec2Environment.updated_gem}`
+    `gem install /tmp/transcoding_machine.gem`
+  end
+rescue
+  log.puts "error #{$!}"
+  pp "#{$@}"
+  exit 1
+end
