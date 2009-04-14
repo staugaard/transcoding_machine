@@ -9,6 +9,7 @@ module TranscodingMachine
         options[:key] = key
         options[:media_players] = media_player_ids
         options[:result_queue] = result_queue_name
+        options[:action] = :analyze
         RightAws::SqsGen2.new.queue(queue_name).push(options.to_yaml)
       end
     end
