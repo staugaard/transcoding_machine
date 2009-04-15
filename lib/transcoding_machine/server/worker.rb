@@ -112,7 +112,7 @@ module TranscodingMachine
         selected_media_players = find_media_players(message_properties[:media_players])
         if selected_media_players.any?
 
-          source_file_attributes, source_media_format, target_media_formats = transcoder.analyze_source_file(media_players)
+          source_file_attributes, source_media_format, target_media_formats = transcoder.analyze_source_file(selected_media_players)
           
           message_properties.delete(:media_players)
           message_properties[:action] = :transcode
