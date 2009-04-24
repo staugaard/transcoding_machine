@@ -82,6 +82,14 @@ module TranscodingMachine
       @fixed_criteria << MediaFormatCriterium.new(:key => :video,
                                                   :operator => :equals,
                                                   :value => true)
+      
+      @fixed_criteria << MediaFormatCriterium.new(:key => :width,
+                                                  :operator => :equals,
+                                                  :value => @width)
+      
+      @fixed_criteria << MediaFormatCriterium.new(:key => :aspect_ratio,
+                                                  :operator => :equals,
+                                                  :value => @aspect_ratio)
     end
 
     def can_transcode?(media_file_attributes)
