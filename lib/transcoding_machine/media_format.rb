@@ -16,7 +16,7 @@ module TranscodingMachine
     end
     
     def matches(media_file_attributes)
-      (@fixed_criteria + @criteria).all? { |c| c.matches(media_file_attributes) }
+      @criteria.any? && (@fixed_criteria + @criteria).all? { |c| c.matches(media_file_attributes) }
     end
     
     def can_transcode?(media_file_attributes)
