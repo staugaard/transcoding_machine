@@ -61,7 +61,7 @@ module TranscodingMachine
     end
     
     def can_transcode?(media_file_attributes)
-      !media_file_attributes[:video] && media_file_attributes[:audio] && media_file_attributes[:bitrate] >= @bitrate
+      !media_file_attributes.video? && media_file_attributes.audio? && media_file_attributes.bitrate >= @bitrate
     end
   end
   
@@ -74,7 +74,7 @@ module TranscodingMachine
       
       case args[:aspect_ratio]
       when String
-        Server::MediaFileAttributes::ASPECT_RATIO_VALUES[args[:aspect_ratio]]
+        @aspect_ratio = Server::MediaFileAttributes::ASPECT_RATIO_VALUES[args[:aspect_ratio]]
       when Float
         @aspect_ratio = args[:aspect_ratio]
       end
@@ -93,7 +93,7 @@ module TranscodingMachine
     end
 
     def can_transcode?(media_file_attributes)
-      media_file_attributes[:video] && media_file_attributes[:width] >= @width && media_file_attributes[:aspect_ratio] == @aspect_ratio
+      media_file_attributes.video? && media_file_attributes.width >= @width && media_file_attributes.aspect_ratio == @aspect_ratio
     end
   end
 end

@@ -81,9 +81,9 @@ module TranscodingMachine
           puts "EXIFTOOL:"
           puts exiftool.inspect
           store(:poster_time, exiftool.poster_time)
-          if exiftool.aspect_ratio and video_aspect != exiftool.aspect_ratio
+          if exiftool.aspect_ratio and aspect_ratio != exiftool.aspect_ratio
             store(:height, (width / exiftool.aspect_ratio).to_i)
-            store(:video_aspect, exiftool.aspect_ratio)
+            store(:aspect_ratio, exiftool.aspect_ratio)
           elsif exiftool.width && exiftool.height
             store(:width, exiftool.width)
             store(:height, exiftool.height)
@@ -200,7 +200,7 @@ module TranscodingMachine
         output[:video_format] = ffmpeg_track[:format] || mplayer_track[:format]
         output[:width] = ffmpeg_track[:width] || mplayer_track[:width]
         output[:height] = ffmpeg_track[:height] || mplayer_track[:height]
-        output[:video_aspect] = ffmpeg_track[:aspect] || mplayer_track[:aspect]
+        output[:aspect_ratio] = ffmpeg_track[:aspect] || mplayer_track[:aspect]
         output[:video_fps] = ffmpeg_track[:fps] || mplayer_track[:fps]
         output[:video_bitrate] = ffmpeg_track[:bitrate] || mplayer_track[:bitrate]
 
@@ -263,7 +263,7 @@ module TranscodingMachine
       end
 
       def derive_values
-        store(:video_aspect, video_aspect_ratio) if (video? && has_key?(:width) && has_key?(:height))
+        store(:aspect_ratio, video_aspect_ratio) if (video? && has_key?(:width) && has_key?(:height))
 
         if file_name && (m = file_name.match(/.+\.(\w+)/))
           store(:file_extension, m[1])
